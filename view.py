@@ -1,11 +1,19 @@
 from tkinter import *
 from bbdd import basededatos
-
+from bbdd import obtener_inventario
+from datetime import datetime
 root = Tk()
 miFrame = Frame(root, width=1200, height=600)
 miFrame.pack()
+
+
+#FUNCION PARA OBTENER FECHA ACTUAL
+def obtener_fecha_actual():
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    return fecha_actual
 # Variables para almacenar la información
 fecha = StringVar()
+fecha.set(obtener_fecha_actual())
 totalventa = IntVar()
 mediopago = StringVar()
 
@@ -85,13 +93,24 @@ def abrir_ventana_inventario():
     Button(ventana_inventario, text="Cerrar", command=root.destroy).grid(row=8, column=5, padx=10, pady=10)
 
 #---------------->>>>>>MOSTRAR INVENTARIO FUNCION<<<<<<<<<<<<<<<<<----------------
+def mostrar_inventario():
+    datos_inventario = obtener_inventario()
+    ventana_inventario = Toplevel(root)
+    ventana_inventario.title("Inventario completo")
+    for i, columna in enumerate(["ID", "Artículo", "Valor", "Proveedor", "Stock"]):
+        Label(ventana_inventario, text=columna, font=("Helvetica", 10, "bold")).grid(row=0, column=i, padx=5, pady=5)
+
+    for i, fila in enumerate(datos_inventario):
+        for j, valor in enumerate(fila):
+            Label(ventana_inventario, text=str(valor)).grid(row=i + 1, column=j, padx=5, pady=5)
+
 
 # ------------------------------------------->>>>>CREACIÓN DE MENÚS<<<<<<<<---------------------------------------------------------------
 barra = Menu(root)
 root.config(menu=barra, width=300, height=300)
 settings = Menu(barra, tearoff=0)
 settings.add_command(label="Añadir stock", command=abrir_ventana_inventario)
-settings.add_command(label="Ver inventario")
+settings.add_command(label="Ver inventario", command=mostrar_inventario)
 settings.add_separator()
 settings.add_command(label="SALIR")
 barra.add_cascade(label="INVENTARIO", menu=settings)

@@ -1,5 +1,16 @@
 import sqlite3
-
+#PARA QUE ME MUESTRE EL INVENTARIO
+def obtener_inventario():
+    try:
+        conexion_inventario = sqlite3.connect('BBDDCajaNegocio.db')
+        cursor_inventario = conexion_inventario.cursor()
+        cursor_inventario.execute('SELECT * FROM INVENTARIO')
+        datos_inventario = cursor_inventario.fetchall()
+        conexion_inventario.close()
+        return datos_inventario
+    except sqlite3.Error as error:
+        print("Error en la BBDD:", error)
+        return []
 
 def basededatos(articulo, valor, proveedor, stock, fecha, total, medio):
     try:
